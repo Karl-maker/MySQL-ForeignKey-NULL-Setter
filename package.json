@@ -1,0 +1,11 @@
+{
+  "name": "mysql-fk-to-null",
+  "version": "1.0.0",
+  "description": "Created to alter database tables to change all FK contraints to ON DELETE NULL",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
