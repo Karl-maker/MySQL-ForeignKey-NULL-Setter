@@ -63,7 +63,7 @@ async function SQLQuery(sql: string, connection: mysql.Connection): Promise<[mys
  */
 async function getAllTables(connection: mysql.Connection): Promise<[mysql.OkPacket | mysql.RowDataPacket[] | mysql.ResultSetHeader[] | mysql.RowDataPacket[][] | mysql.OkPacket[] | mysql.ProcedureCallPacket, mysql.FieldPacket[]]> {
     const query = 'SELECT table_name FROM information_schema.tables WHERE table_schema = ' + connection.escape(connection.config.database);
-    return await SQLQuery(query, connection);
+    return await connection.query(query);
 }
 
 /**
@@ -83,7 +83,7 @@ async function findFKContraints(table_name: string, connection: mysql.Connection
       TABLE_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL;
   `;
 
-  const [results] = await connection.execute(query, [table_name]);
+  const [results] = await connection.query(query, [table_name]);
   let fkConstraints = [];
 
   if(Array.isArray(results)) {
@@ -134,7 +134,7 @@ async function updateForeignKeyConstraint(option : {
 async function dropForeignKeyConstraint(tableName: string, fkContraintKey: string, connection: mysql.Connection): Promise<void> {
   const dropForeignKeyQuery = `ALTER TABLE \`${tableName}\` DROP FOREIGN KEY \`${fkContraintKey}\``;
   console.log(dropForeignKeyQuery);
-  await SQLQuery(dropForeignKeyQuery, connection);
+  await connection.query(dropForeignKeyQuery);
 }
 
 async function addNewForeignKeyConstraint(
@@ -153,6 +153,6 @@ async function addNewForeignKeyConstraint(
     ADD FOREIGN KEY (\`${rowName}\`) REFERENCES \`${referencedTableName}\` (\`id\`) ON DELETE SET NULL ON UPDATE NO ACTION;
   `;
   console.log(modifyForeignKeyQuery, addForeignKeyQuery)
-  await SQLQuery(modifyForeignKeyQuery, connection);
-  await SQLQuery(addForeignKeyQuery, connection);
+  await connection.query(modifyForeignKeyQuery);
+  await connection.query(addForeignKeyQuery);
 }
